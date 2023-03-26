@@ -1,3 +1,5 @@
+(require 'ox-html)
+
 (defun ox-html-markdown-style-footnotes--section (orig-fun &rest args)
   (let ((info (car args)))
     (pcase (org-export-collect-footnote-definitions info)
