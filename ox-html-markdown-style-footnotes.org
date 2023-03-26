@@ -97,7 +97,7 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
 #+begin_src emacs-lisp
   (require 'ox-html)
 
-  (defun ox-html-markdown-style-footnotes--section (orig-fun &rest args)
+  (defun org-html-markdown-style-footnotes--section (orig-fun &rest args)
     "Replace ORIG-FUN with a Markdown-style footnotes section.
           ARGS contains the info plist, which is used as a communication channel."
     (let ((info (car args)))
@@ -118,26 +118,26 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
                   "\n"))))))
 
   ;;;###autoload
-  (defun ox-html-markdown-style-footnotes-add ()
+  (defun org-html-markdown-style-footnotes-add ()
     (interactive)
     (advice-add 'org-html-footnote-section
-                :around #'ox-html-markdown-style-footnotes--section))
+                :around #'org-html-markdown-style-footnotes--section))
 
-  (defun ox-html-markdown-style-footnotes-remove ()
+  (defun org-html-markdown-style-footnotes-remove ()
     (interactive)
     (advice-remove 'org-html-footnote-section
-                   #'ox-html-markdown-style-footnotes--section))
+                   #'org-html-markdown-style-footnotes--section))
 
   (provide 'ox-html-markdown-style-footnotes)
 #+end_src
 
 #+headers: :exports none
-#+headers: :tangle ox-html-markdown-style-footnotes.el
+#+headers: :tangle org-html-markdown-style-footnotes.el
 #+begin_src emacs-lisp
 ;;; ox-html-markdown-style-footnotes.el ends here
 #+end_src
 
-After adding the advise with =ox-html-markdown-style-footnotes-add=, the exported footnotes are Markdown-style unordered lists:
+After adding the advise with =org-html-markdown-style-footnotes-add=, the exported footnotes are Markdown-style unordered lists:
 
 #+headers: :cache yes
 #+headers: :exports results
@@ -151,7 +151,7 @@ After adding the advise with =ox-html-markdown-style-footnotes-add=, the exporte
         --eval '(setq org-html-head-include-default-style nil)' \
         --eval '(setq org-html-preamble nil)' \
         --eval '(setq org-html-postamble nil)' \
-        --eval '(ox-html-markdown-style-footnotes-add)' \
+        --eval '(org-html-markdown-style-footnotes-add)' \
         --funcall org-html-export-to-html
   cat /tmp/footnote-2.html | tail -n13 | head -n10
 #+end_src

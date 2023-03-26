@@ -10,7 +10,7 @@
 
 (require 'ox-html)
 
-(defun ox-html-markdown-style-footnotes--section (orig-fun &rest args)
+(defun org-html-markdown-style-footnotes--section (orig-fun &rest args)
   "Replace ORIG-FUN with a Markdown-style footnotes section.
         ARGS contains the info plist, which is used as a communication channel."
   (let ((info (car args)))
@@ -31,16 +31,14 @@
                 "\n"))))))
 
 ;;;###autoload
-(defun ox-html-markdown-style-footnotes-add ()
+(defun org-html-markdown-style-footnotes-add ()
   (interactive)
   (advice-add 'org-html-footnote-section
-              :around #'ox-html-markdown-style-footnotes--section))
+              :around #'org-html-markdown-style-footnotes--section))
 
-(defun ox-html-markdown-style-footnotes-remove ()
+(defun org-html-markdown-style-footnotes-remove ()
   (interactive)
   (advice-remove 'org-html-footnote-section
-                 #'ox-html-markdown-style-footnotes--section))
+                 #'org-html-markdown-style-footnotes--section))
 
 (provide 'ox-html-markdown-style-footnotes)
-
-;;; ox-html-markdown-style-footnotes.el ends here
