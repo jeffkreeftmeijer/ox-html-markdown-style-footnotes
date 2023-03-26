@@ -103,6 +103,8 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
 
   (advice-add 'org-html-footnote-section
               :around #'ox-html-markdown-style-footnotes--section)
+
+  (provide 'ox-html-markdown-style-footnotes)
 #+end_src
 
 The resulting footnotes are now unordered lists:

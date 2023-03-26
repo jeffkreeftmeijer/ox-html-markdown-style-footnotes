@@ -20,3 +20,5 @@
 
 (advice-add 'org-html-footnote-section
             :around #'ox-html-markdown-style-footnotes--section)
+
+(provide 'ox-html-markdown-style-footnotes)
