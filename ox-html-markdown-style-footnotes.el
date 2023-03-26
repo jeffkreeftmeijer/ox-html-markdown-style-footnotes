@@ -30,8 +30,16 @@
                 definitions
                 "\n"))))))
 
-(advice-add 'org-html-footnote-section
-            :around #'ox-html-markdown-style-footnotes--section)
+;;;###autoload
+(defun ox-html-markdown-style-footnotes-add ()
+  (interactive)
+  (advice-add 'org-html-footnote-section
+              :around #'ox-html-markdown-style-footnotes--section))
+
+(defun ox-html-markdown-style-footnotes-remove ()
+  (interactive)
+  (advice-remove 'org-html-footnote-section
+                 #'ox-html-markdown-style-footnotes--section))
 
 (provide 'ox-html-markdown-style-footnotes)
 

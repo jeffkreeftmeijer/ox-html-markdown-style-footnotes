@@ -117,8 +117,16 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
                   definitions
                   "\n"))))))
 
-  (advice-add 'org-html-footnote-section
-              :around #'ox-html-markdown-style-footnotes--section)
+  ;;;###autoload
+  (defun ox-html-markdown-style-footnotes-add ()
+    (interactive)
+    (advice-add 'org-html-footnote-section
+                :around #'ox-html-markdown-style-footnotes--section))
+
+  (defun ox-html-markdown-style-footnotes-remove ()
+    (interactive)
+    (advice-remove 'org-html-footnote-section
+                   #'ox-html-markdown-style-footnotes--section))
 
   (provide 'ox-html-markdown-style-footnotes)
 #+end_src
@@ -129,7 +137,7 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
 ;;; ox-html-markdown-style-footnotes.el ends here
 #+end_src
 
-The resulting footnotes are now unordered lists:
+After adding the advise with =ox-html-markdown-style-footnotes-add=, the exported footnotes are Markdown-style unordered lists:
 
 #+headers: :cache yes
 #+headers: :exports results
@@ -143,11 +151,12 @@ The resulting footnotes are now unordered lists:
         --eval '(setq org-html-head-include-default-style nil)' \
         --eval '(setq org-html-preamble nil)' \
         --eval '(setq org-html-postamble nil)' \
+        --eval '(ox-html-markdown-style-footnotes-add)' \
         --funcall org-html-export-to-html
   cat /tmp/footnote-2.html | tail -n13 | head -n10
 #+end_src
 
-#+RESULTS[aa136aac98d01d76a22c5af0fab9d273d4f989d2]:
+#+RESULTS[306192f3e02337f9cbe11bae5b44bb372aa1ba22]:
 #+begin_src html
 <hr>
 <ol>
