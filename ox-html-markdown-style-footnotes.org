@@ -1,0 +1,177 @@
+:PROPERTIES:
+:ID:       0CBCCEE0-6392-4EC6-BC6A-AB837306B7EB
+:ROAM_ALIASES: ox-html-markdown-style-footnotes
+:END:
+#+title: Export Org documents with Markdown-style footnotes
+#+author: Jeff Kreeftmeijer
+#+date: 2023-03-26
+
+#+headers: :eval no
+#+begin_src org :tangle /tmp/footnote.org
+  Hello, world![fn:1]
+  [fn:1] A footnote.
+#+end_src
+
+The Org document above produces the following footnotes when exported to HTML:
+
+#+headers: :cache yes
+#+headers: :exports results
+#+headers: :results scalar
+#+headers: :wrap src html
+#+begin_src shell
+  emacs /tmp/footnote.org --batch \
+        --eval '(setq org-html-doctype "html5")' \
+        --eval '(setq org-html-head-include-default-style nil)' \
+        --eval '(setq org-html-preamble nil)' \
+        --eval '(setq org-html-postamble nil)' \
+        --funcall org-html-export-to-html
+  cat /tmp/footnote.html | tail -n9 | head -n3
+#+end_src
+
+#+RESULTS[fb44facc58c83460d313d31b252a26c77765811e]:
+#+begin_src html
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+A footnote.
+</p></div></div>
+#+end_src
+
+Footnotes consist of a link back to the place the footnote was referenced in the document and a =<div>= with the footnote's contents.
+The contents div, being a block element, is printed on a seperate line unless the default styling is loaded.
+The styling makes the footnotes appear inline, which places them behing the footnote link, but also inlines each paragraph for multi-paragraph footnotes:
+
+#+headers: :eval no
+#+begin_src org :tangle /tmp/footnote-2.org
+  Hello, world![fn:1]
+  [fn:1] A footnote.
+
+  With a second paragraph.
+#+end_src
+
+#+headers: :cache yes
+#+headers: :exports results
+#+headers: :results scalar
+#+headers: :wrap src html
+#+begin_src shell
+  emacs /tmp/footnote-2.org --batch \
+        --eval '(setq org-html-doctype "html5")' \
+        --eval '(setq org-html-head-include-default-style nil)' \
+        --eval '(setq org-html-preamble nil)' \
+        --eval '(setq org-html-postamble nil)' \
+        --funcall org-html-export-to-html
+  cat /tmp/footnote-2.html | tail -n13 | head -n7
+#+end_src
+
+#+RESULTS[d65ae38d5c1be7cd923a6430c15b95409b4e4c18]:
+#+begin_src html
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+A footnote.
+</p>
+
+<p class="footpara">
+With a second paragraph.
+</p></div></div>
+#+end_src
+
+Some flavors of Markdown use [[https://www.markdownguide.org/extended-syntax/#footnotes][ordered lists for footnotes]].
+These don't rely on styling, and they don't inline paragraphs in the footnotes.
+
+To use Markdown-style footnotes in Org, advise the =org-html-footnote-section= function.[fn:default]
+This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
+It also uses a backlink with an arrow, which resembles the Markdown tradition:
+
+#+headers: :tangle ox-html-markdown-style-footnotes.el
+#+begin_src emacs-lisp
+  (defun ox-html-markdown-style-footnotes--section (orig-fun &rest args)
+    (let ((info (car args)))
+      (pcase (org-export-collect-footnote-definitions info)
+        (`nil nil)
+        (definitions
+         (format "<hr>\n<ol>\n%s</ol>\n"
+                 (mapconcat
+                  (lambda (definition)
+                    (pcase definition
+                      (`(,n ,_ ,def)
+                       (format
+                        "<li class=\"footdef\" id=\"fn.%d\">%s%s</li>\n"
+                        n
+                        (format "<div class=\"footpara\" role=\"doc-footnote\">%s</div>" (org-trim (org-export-data def info)))
+                        (format "<a href=\"#fnr.%d\" role=\"doc-backlink\">↩</a>" n)))))
+                  definitions
+                  "\n"))))))
+
+  (advice-add 'org-html-footnote-section
+              :around #'ox-html-markdown-style-footnotes--section)
+#+end_src
+
+The resulting footnotes are now unordered lists:
+
+#+headers: :cache yes
+#+headers: :exports results
+#+headers: :results scalar
+#+headers: :wrap src html
+#+begin_src shell
+  emacs --batch \
+        --load=ox-html-markdown-style-footnotes.el \
+        --file=/tmp/footnote-2.org \
+        --eval '(setq org-html-doctype "html5")' \
+        --eval '(setq org-html-head-include-default-style nil)' \
+        --eval '(setq org-html-preamble nil)' \
+        --eval '(setq org-html-postamble nil)' \
+        --funcall org-html-export-to-html
+  cat /tmp/footnote-2.html | tail -n13 | head -n10
+#+end_src
+
+#+RESULTS[aa136aac98d01d76a22c5af0fab9d273d4f989d2]:
+#+begin_src html
+<hr>
+<ol>
+<li class="footdef" id="fn.1"><div class="footpara" role="doc-footnote"><p class="footpara">
+A footnote.
+</p>
+
+<p class="footpara">
+With a second paragraph.
+</p></div><a href="#fnr.1" role="doc-backlink">↩</a></li>
+</ol>
+#+end_src
+
+[fn:default] [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/ox-html.el?h=44e1cbb09484c8f8c49ef49376ef7988b04decc2#n1857][Currently]], the =org-html-footnote-section= function looks like this:
+
+#+begin_src emacs-lisp
+  (defun org-html-footnote-section (info)
+    "Format the footnote section.
+  INFO is a plist used as a communication channel."
+    (pcase (org-export-collect-footnote-definitions info)
+      (`nil nil)
+      (definitions
+       (format
+        (plist-get info :html-footnotes-section)
+        (org-html--translate "Footnotes" info)
+        (format
+         "\n%s\n"
+         (mapconcat
+          (lambda (definition)
+            (pcase definition
+              (`(,n ,_ ,def)
+               ;; `org-export-collect-footnote-definitions' can return
+               ;; two kinds of footnote definitions: inline and blocks.
+               ;; Since this should not make any difference in the HTML
+               ;; output, we wrap the inline definitions within
+               ;; a "footpara" class paragraph.
+               (let ((inline? (not (org-element-map def org-element-all-elements
+                                     #'identity nil t)))
+                     (anchor (org-html--anchor
+                              (format "fn.%d" n)
+                              n
+                              (format " class=\"footnum\" href=\"#fnr.%d\" role=\"doc-backlink\"" n)
+                              info))
+                     (contents (org-trim (org-export-data def info))))
+                 (format "<div class=\"footdef\">%s %s</div>\n"
+                         (format (plist-get info :html-footnote-format) anchor)
+                         (format "<div class=\"footpara\" role=\"doc-footnote\">%s</div>"
+                                 (if (not inline?) contents
+                                   (format "<p class=\"footpara\">%s</p>"
+                                           contents))))))))
+          definitions
+          "\n"))))))
+#+end_src
