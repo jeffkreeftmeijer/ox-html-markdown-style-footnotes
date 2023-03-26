@@ -79,11 +79,27 @@ To use Markdown-style footnotes in Org, advise the =org-html-footnote-section= f
 This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
 It also uses a backlink with an arrow, which resembles the Markdown tradition:
 
+#+headers: :exports none
+#+headers: :tangle ox-html-markdown-style-footnotes.el
+#+begin_src emacs-lisp
+  ;;; ox-html-markdown-style-footnotes.el --- Markdown-style footnotes for ox-html.el
+
+  ;;; Commentary:
+
+  ;; ox-html-markdown-style-footnotes replaces the ox-html's default
+  ;; footnotes with an HTML ordered list, inspired by footnotes sections
+  ;; of some Markdown implementations.
+
+  ;;; Code:
+#+end_src
+
 #+headers: :tangle ox-html-markdown-style-footnotes.el
 #+begin_src emacs-lisp
   (require 'ox-html)
 
   (defun ox-html-markdown-style-footnotes--section (orig-fun &rest args)
+    "Replace ORIG-FUN with a Markdown-style footnotes section.
+          ARGS contains the info plist, which is used as a communication channel."
     (let ((info (car args)))
       (pcase (org-export-collect-footnote-definitions info)
         (`nil nil)
@@ -105,6 +121,12 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
               :around #'ox-html-markdown-style-footnotes--section)
 
   (provide 'ox-html-markdown-style-footnotes)
+#+end_src
+
+#+headers: :exports none
+#+headers: :tangle ox-html-markdown-style-footnotes.el
+#+begin_src emacs-lisp
+;;; ox-html-markdown-style-footnotes.el ends here
 #+end_src
 
 The resulting footnotes are now unordered lists:

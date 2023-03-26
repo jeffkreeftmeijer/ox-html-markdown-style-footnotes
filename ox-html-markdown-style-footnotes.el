@@ -1,6 +1,18 @@
+;;; ox-html-markdown-style-footnotes.el --- Markdown-style footnotes for ox-html.el
+
+;;; Commentary:
+
+;; ox-html-markdown-style-footnotes replaces the ox-html's default
+;; footnotes with an HTML ordered list, inspired by footnotes sections
+;; of some Markdown implementations.
+
+;;; Code:
+
 (require 'ox-html)
 
 (defun ox-html-markdown-style-footnotes--section (orig-fun &rest args)
+  "Replace ORIG-FUN with a Markdown-style footnotes section.
+        ARGS contains the info plist, which is used as a communication channel."
   (let ((info (car args)))
     (pcase (org-export-collect-footnote-definitions info)
       (`nil nil)
@@ -22,3 +34,5 @@
             :around #'ox-html-markdown-style-footnotes--section)
 
 (provide 'ox-html-markdown-style-footnotes)
+
+;;; ox-html-markdown-style-footnotes.el ends here
