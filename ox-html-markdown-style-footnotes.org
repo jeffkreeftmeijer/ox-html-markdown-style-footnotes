@@ -7,7 +7,7 @@
 #+date: 2023-03-26
 
 #+headers: :eval no
-#+begin_src org :tangle /tmp/footnote.org
+#+begin_src org :tangle test/fixtures/footnote.org
   Hello, world![fn:1]
   [fn:1] A footnote.
 #+end_src
