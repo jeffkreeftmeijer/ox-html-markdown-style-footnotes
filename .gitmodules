@@ -1,0 +1,3 @@
+[submodule "script/readme.el"]
+	path = script/readme.el
+	url = https://github.com/jeffkreeftmeijer/ox-html-stable-ids.el.git
