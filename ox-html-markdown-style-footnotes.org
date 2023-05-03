@@ -113,7 +113,7 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
                         "<li class=\"footdef\" id=\"fn.%d\">%s%s</li>\n"
                         n
                         (format "<div class=\"footpara\" role=\"doc-footnote\">%s</div>" (org-trim (org-export-data def info)))
-                        (format "<a href=\"#fnr.%d\" role=\"doc-backlink\">↩</a>" n)))))
+                        (format "<a href=\"#fnr.%d\" role=\"doc-backlink\">↩&#65038;</a>" n)))))
                   definitions
                   "\n"))))))
 
