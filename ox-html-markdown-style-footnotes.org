@@ -146,6 +146,27 @@ With a second paragraph.
 #+end_src
 
 
+* Installation
+
+Ox-html-markdown-style-footnotes is currently not available through any of the package registries.
+Instead, install it from the git repository directly.
+Install the package with [[https://github.com/jwiegley/use-package][use-package]] and [[https://github.com/radian-software/straight.el][straight.el]], and enable it by calling =org-html-markdown-style-footnotes-add=:
+
+#+begin_src emacs-lisp
+  (use-package ox-md-title
+    :straight
+    (ox-html-markown-style-footnotes :type git :host codeberg :repo "jkreeftmeijer/ox-html-markdown-style-footnotes.el")
+    :config
+    (org-html-markdown-style-footnotes-add))
+#+end_src
+
+After calling ~org-html-markdown-style-footnotes-add~, set the ~org-html-markdown-style-footnotes~ variable to to enable the package while exporting:
+
+#+begin_src emacs-lisp
+  (let ((org-html-markdown-style-footnotes t))
+    (org-html-publish-to-html))
+#+end_src
+
 * Contributing
 
 The git repository for ox-html-markdown-style-footnotes.el is hosted on [[https://codeberg.org/jkreeftmeijer/ox-html-markdown-style-footnotes.el][Codeberg]], and mirrored on [[https://github.com/jeffkreeftmeijer/ox-html-markdown-style-footnotes.el][GitHub]].
