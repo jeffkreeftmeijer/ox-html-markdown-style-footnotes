@@ -42,3 +42,5 @@
                  #'org-html-markdown-style-footnotes--section))
 
 (provide 'ox-html-markdown-style-footnotes)
+
+;;; ox-html-markdown-style-footnotes.el ends here

@@ -100,7 +100,7 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
 #+end_src
 
 #+headers: :exports none
-#+headers: :tangle org-html-markdown-style-footnotes.el
+#+headers: :tangle ox-html-markdown-style-footnotes.el
 #+begin_src emacs-lisp
 ;;; ox-html-markdown-style-footnotes.el ends here
 #+end_src
