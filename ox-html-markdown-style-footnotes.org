@@ -37,7 +37,7 @@ A footnote.
 
 Footnotes consist of a link back to the place the footnote was referenced in the document and a =<div>= with the footnote's contents.
 The contents div, being a block element, is printed on a seperate line unless the default styling is loaded.
-The styling makes the footnotes appear inline, which places them behing the footnote link, but also inlines each paragraph for multi-paragraph footnotes:
+The styling makes the footnotes appear inline, which places them behind the footnote link, but also inlines each paragraph for multi-paragraph footnotes:
 
 #+headers: :eval no
 #+begin_src org :tangle /tmp/footnote-2.org
