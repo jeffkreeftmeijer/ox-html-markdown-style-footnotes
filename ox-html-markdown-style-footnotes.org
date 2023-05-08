@@ -156,7 +156,7 @@ After adding the advise with =org-html-markdown-style-footnotes-add=, the export
   cat /tmp/footnote-2.html | tail -n13 | head -n10
 #+end_src
 
-#+RESULTS[306192f3e02337f9cbe11bae5b44bb372aa1ba22]:
+#+RESULTS[e4aeb3dc67f0eb11396d406b613758c0632af791]:
 #+begin_src html
 <hr>
 <ol>
@@ -166,7 +166,7 @@ A footnote.
 
 <p class="footpara">
 With a second paragraph.
-</p></div><a href="#fnr.1" role="doc-backlink">↩</a></li>
+</p></div><a href="#fnr.1" role="doc-backlink">↩&#65038;</a></li>
 </ol>
 #+end_src
 
