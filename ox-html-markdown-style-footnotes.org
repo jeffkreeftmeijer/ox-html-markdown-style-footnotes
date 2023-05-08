@@ -141,3 +141,9 @@ With a second paragraph.
 </p></div><a href="#fnr.1" role="doc-backlink">↩&#65038;</a></li>
 </ol>
 #+end_src
+
+
+* Contributing
+
+The git repository for ox-html-markdown-style-footnotes.el is hosted on [[https://codeberg.org/jkreeftmeijer/ox-html-markdown-style-footnotes.el][Codeberg]], and mirrored on [[https://github.com/jeffkreeftmeijer/ox-html-markdown-style-footnotes.el][GitHub]].
+Contributions are welcome via either platform.
