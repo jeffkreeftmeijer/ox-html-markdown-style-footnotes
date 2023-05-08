@@ -37,40 +37,7 @@ A footnote.
 
 Footnotes consist of a link back to the place the footnote was referenced in the document and a =<div>= with the footnote's contents.
 The contents div, being a block element, is printed on a seperate line unless the default styling is loaded.
-The styling makes the footnotes appear inline, which places them behind the footnote link, but also inlines each paragraph for multi-paragraph footnotes:
-
-#+headers: :eval no
-#+begin_src org :tangle /tmp/footnote-2.org
-  Hello, world![fn:1]
-  [fn:1] A footnote.
-
-  With a second paragraph.
-#+end_src
-
-#+headers: :cache yes
-#+headers: :exports results
-#+headers: :results scalar
-#+headers: :wrap src html
-#+begin_src shell
-  emacs /tmp/footnote-2.org --batch \
-        --eval '(setq org-html-doctype "html5")' \
-        --eval '(setq org-html-head-include-default-style nil)' \
-        --eval '(setq org-html-preamble nil)' \
-        --eval '(setq org-html-postamble nil)' \
-        --funcall org-html-export-to-html
-  cat /tmp/footnote-2.html | tail -n13 | head -n7
-#+end_src
-
-#+RESULTS[d65ae38d5c1be7cd923a6430c15b95409b4e4c18]:
-#+begin_src html
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-A footnote.
-</p>
-
-<p class="footpara">
-With a second paragraph.
-</p></div></div>
-#+end_src
+The styling makes the footnotes appear inline, which places them behind the footnote link, but also inlines each paragraph for multi-paragraph footnotes.
 
 Some flavors of Markdown use [[https://www.markdownguide.org/extended-syntax/#footnotes][ordered lists for footnotes]].
 These don't rely on styling, and they don't inline paragraphs in the footnotes.
