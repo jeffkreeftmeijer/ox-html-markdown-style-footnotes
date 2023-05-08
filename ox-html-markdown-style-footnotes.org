@@ -43,7 +43,7 @@ The styling makes the footnotes appear inline, which places them behind the foot
 Some flavors of Markdown use [[https://www.markdownguide.org/extended-syntax/#footnotes][ordered lists for footnotes]].
 These don't rely on styling, and they don't inline paragraphs in the footnotes.
 
-To use Markdown-style footnotes in Org, advise the =org-html-footnote-section= function.[fn:default]
+To use Markdown-style footnotes in Org, advise the =org-html-footnote-section= function.
 This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
 It also uses a backlink with an arrow, which resembles the Markdown tradition:
 
@@ -136,45 +136,4 @@ A footnote.
 With a second paragraph.
 </p></div><a href="#fnr.1" role="doc-backlink">↩&#65038;</a></li>
 </ol>
-#+end_src
-
-[fn:default] [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/ox-html.el?h=44e1cbb09484c8f8c49ef49376ef7988b04decc2#n1857][Currently]], the =org-html-footnote-section= function looks like this:
-
-#+begin_src emacs-lisp
-  (defun org-html-footnote-section (info)
-    "Format the footnote section.
-  INFO is a plist used as a communication channel."
-    (pcase (org-export-collect-footnote-definitions info)
-      (`nil nil)
-      (definitions
-       (format
-        (plist-get info :html-footnotes-section)
-        (org-html--translate "Footnotes" info)
-        (format
-         "\n%s\n"
-         (mapconcat
-          (lambda (definition)
-            (pcase definition
-              (`(,n ,_ ,def)
-               ;; `org-export-collect-footnote-definitions' can return
-               ;; two kinds of footnote definitions: inline and blocks.
-               ;; Since this should not make any difference in the HTML
-               ;; output, we wrap the inline definitions within
-               ;; a "footpara" class paragraph.
-               (let ((inline? (not (org-element-map def org-element-all-elements
-                                     #'identity nil t)))
-                     (anchor (org-html--anchor
-                              (format "fn.%d" n)
-                              n
-                              (format " class=\"footnum\" href=\"#fnr.%d\" role=\"doc-backlink\"" n)
-                              info))
-                     (contents (org-trim (org-export-data def info))))
-                 (format "<div class=\"footdef\">%s %s</div>\n"
-                         (format (plist-get info :html-footnote-format) anchor)
-                         (format "<div class=\"footpara\" role=\"doc-footnote\">%s</div>"
-                                 (if (not inline?) contents
-                                   (format "<p class=\"footpara\">%s</p>"
-                                           contents))))))))
-          definitions
-          "\n"))))))
 #+end_src
