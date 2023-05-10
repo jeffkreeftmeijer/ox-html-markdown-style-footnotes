@@ -29,19 +29,27 @@ The Org document above produces the following footnotes when exported to HTML:
 #+headers: :results scalar
 #+headers: :wrap src html
 #+begin_src shell
-  emacs /tmp/footnote.org --batch \
-        --eval '(setq org-html-doctype "html5")' \
-        --eval '(setq org-html-head-include-default-style nil)' \
-        --eval '(setq org-html-preamble nil)' \
-        --eval '(setq org-html-postamble nil)' \
-        --funcall org-html-export-to-html
-  cat /tmp/footnote.html | tail -n9 | head -n3
+  emacs test/fixtures/footnote.org --batch \
+	--eval '(setq org-html-doctype "html5")' \
+	--eval '(setq org-html-head-include-default-style nil)' \
+	--eval '(setq org-html-preamble nil)' \
+	--eval '(setq org-html-postamble nil)' \
+	--funcall org-html-export-to-html
+  cat test/fixtures/footnote.html | tail -n17 | head -n11
 #+end_src
 
-#+RESULTS[fb44facc58c83460d313d31b252a26c77765811e]:
+#+RESULTS[8d9352a4e4a315a10a1c43b3814a14a3a72ea19d]:
 #+begin_src html
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 A footnote.
+</p>
+
+<p class="footpara">
+With a second paragraph.
 </p></div></div>
 #+end_src
 
