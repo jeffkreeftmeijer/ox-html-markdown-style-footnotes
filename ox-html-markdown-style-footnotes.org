@@ -30,10 +30,10 @@ The Org document above produces the following footnotes when exported to HTML:
 #+headers: :wrap src html
 #+begin_src shell
   emacs test/fixtures/footnote.org --batch \
-	--eval '(setq org-html-doctype "html5")' \
-	--eval '(setq org-html-preamble nil)' \
-	--eval '(setq org-html-postamble nil)' \
-	--funcall org-html-export-to-html
+        --eval '(setq org-html-doctype "html5")' \
+        --eval '(setq org-html-preamble nil)' \
+        --eval '(setq org-html-postamble nil)' \
+        --funcall org-html-export-to-html
   cat test/fixtures/footnote.html | tail -n17 | head -n11
 #+end_src
 
@@ -207,14 +207,14 @@ After adding the advise with =org-html-markdown-style-footnotes-add=, the export
 #+begin_src shell
   cp test/fixtures/footnote.org test/fixtures/footnote-2.org
   emacs --batch \
-	--load=ox-html-markdown-style-footnotes.el \
-	--file=test/fixtures/footnote-2.org \
-	--eval '(setq org-html-doctype "html5")' \
-	--eval '(setq org-html-head-include-default-style nil)' \
-	--eval '(setq org-html-preamble nil)' \
-	--eval '(setq org-html-postamble nil)' \
-	--eval '(org-html-markdown-style-footnotes-add)' \
-	--funcall org-html-export-to-html
+        --load=ox-html-markdown-style-footnotes.el \
+        --file=test/fixtures/footnote-2.org \
+        --eval '(setq org-html-doctype "html5")' \
+        --eval '(setq org-html-head-include-default-style nil)' \
+        --eval '(setq org-html-preamble nil)' \
+        --eval '(setq org-html-postamble nil)' \
+        --eval '(org-html-markdown-style-footnotes-add)' \
+        --funcall org-html-export-to-html
   cat test/fixtures/footnote-2.html | tail -n17 | head -n15
 #+end_src
 
