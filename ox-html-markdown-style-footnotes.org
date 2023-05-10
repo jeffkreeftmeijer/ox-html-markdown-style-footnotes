@@ -108,7 +108,7 @@ This results in footnotes with support for multiple paragraphs, that work withou
 #+caption: Footnotes with ox-html-markdown-style-footnotes
 [[./after.png]]
 
-* The current implementation
+* Implementation
 
 In [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/ox-html.el?h=release_9.6.5#n1858][Org mode 9.6.5]], the ~org-html-footnote-section~ looks like this:
 
@@ -155,7 +155,6 @@ The interesting part is executed for each footnote, and wraps each footnote in a
                               contents)))))
 #+end_src
 
-* Advising ~org-html-footnote-section~
 
 The updated implementation:
 
@@ -180,6 +179,7 @@ The updated implementation:
 To use Markdown-style footnotes in Org, advise the =org-html-footnote-section= function.
 This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
 It also uses a backlink with an arrow, which resembles the Markdown tradition:
+** Advising ~org-html-footnote-section~
 
 #+headers: :exports none
 #+headers: :tangle ox-html-markdown-style-footnotes.el
