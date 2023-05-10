@@ -66,6 +66,45 @@ To use Markdown-style footnotes in Org, ox-html-markdown footnotes advises the =
 This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
 It also uses a backlink with an arrow, which resembles the Markdown tradition:
 
+#+headers: :cache yes
+#+headers: :exports results
+#+headers: :results scalar
+#+headers: :wrap src html
+#+begin_src shell
+  cp test/fixtures/footnote.org test/fixtures/footnote-2.org
+  emacs --batch \
+        --load=ox-html-markdown-style-footnotes.el \
+        --file=test/fixtures/footnote-2.org \
+        --eval '(setq org-html-doctype "html5")' \
+        --eval '(setq org-html-head-include-default-style nil)' \
+        --eval '(setq org-html-preamble nil)' \
+        --eval '(setq org-html-postamble nil)' \
+        --eval '(org-html-markdown-style-footnotes-add)' \
+        --funcall org-html-export-to-html
+  cat test/fixtures/footnote-2.html | tail -n17 | head -n15
+#+end_src
+
+#+RESULTS[c7f215aa0a1e1ebd322ce777f0b527fd2103d910]:
+#+begin_src html
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+<ol>
+<li class="footdef" role="doc-footnote"><p class="footpara">
+A footnote.
+</p>
+
+<p class="footpara">
+With a second paragraph.
+</p> <a id="fn.1" href="#fnr.1" role="doc-backlink">↩&#65038;</a></li>
+</ol>
+
+</div>
+</div></div>
+#+end_src
+
+This results in footnotes with support for multiple paragraphs, that work without additional styling:
+
 #+caption: Footnotes with ox-html-markdown-style-footnotes
 [[./after.png]]
 
@@ -201,43 +240,6 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
 ;;; ox-html-markdown-style-footnotes.el ends here
 #+end_src
 
-After adding the advise with =org-html-markdown-style-footnotes-add=, the exported footnotes are Markdown-style unordered lists:
-
-#+headers: :cache yes
-#+headers: :exports results
-#+headers: :results scalar
-#+headers: :wrap src html
-#+begin_src shell
-  cp test/fixtures/footnote.org test/fixtures/footnote-2.org
-  emacs --batch \
-        --load=ox-html-markdown-style-footnotes.el \
-        --file=test/fixtures/footnote-2.org \
-        --eval '(setq org-html-doctype "html5")' \
-        --eval '(setq org-html-head-include-default-style nil)' \
-        --eval '(setq org-html-preamble nil)' \
-        --eval '(setq org-html-postamble nil)' \
-        --eval '(org-html-markdown-style-footnotes-add)' \
-        --funcall org-html-export-to-html
-  cat test/fixtures/footnote-2.html | tail -n17 | head -n15
-#+end_src
-
-#+RESULTS[c7f215aa0a1e1ebd322ce777f0b527fd2103d910]:
-#+begin_src html
-<div id="footnotes">
-<h2 class="footnotes">Footnotes: </h2>
-<div id="text-footnotes">
-<ol>
-<li class="footdef" role="doc-footnote"><p class="footpara">
-A footnote.
-</p>
-
-<p class="footpara">
-With a second paragraph.
-</p> <a id="fn.1" href="#fnr.1" role="doc-backlink">↩&#65038;</a></li>
-</ol>
-
-</div>
-</div></div>
 #+end_src
 
 * Installation
