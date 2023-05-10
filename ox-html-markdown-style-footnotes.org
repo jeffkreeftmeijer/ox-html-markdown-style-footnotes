@@ -2,7 +2,7 @@
 :ID:       0CBCCEE0-6392-4EC6-BC6A-AB837306B7EB
 :ROAM_ALIASES: ox-html-markdown-style-footnotes
 :END:
-#+title: Export Org documents with Markdown-style footnotes
+#+title: ox-html-markdown-style-footnotes: Markdown-style footnotes for ox-html.el
 #+author: Jeff Kreeftmeijer
 #+date: 2023-05-11
 #+options: toc:nil num:nil
