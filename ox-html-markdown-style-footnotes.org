@@ -62,6 +62,13 @@ The styling makes the footnotes appear inline, which places them behind the foot
 Some flavors of Markdown use [[https://www.markdownguide.org/extended-syntax/#footnotes][ordered lists for footnotes]].
 These don't rely on styling, and they don't inline paragraphs in the footnotes.
 
+To use Markdown-style footnotes in Org, ox-html-markdown footnotes advises the =org-html-footnote-section= function to overwrite its implementation.
+This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
+It also uses a backlink with an arrow, which resembles the Markdown tradition:
+
+#+caption: Footnotes with ox-html-markdown-style-footnotes
+[[./after.png]]
+
 * The current implementation
 
 In [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/ox-html.el?h=release_9.6.5#n1858][Org mode 9.6.5]], the ~org-html-footnote-section~ looks like this:
@@ -110,10 +117,6 @@ The interesting part is executed for each footnote, and wraps each footnote in a
 #+end_src
 
 * Advising ~org-html-footnote-section~
-
-To use Markdown-style footnotes in Org, ox-html-markdown footnotes advises the =org-html-footnote-section= function to overwrite its implementation.
-This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
-It also uses a backlink with an arrow, which resembles the Markdown tradition:
 
 The updated implementation:
 
@@ -236,9 +239,6 @@ With a second paragraph.
 </div>
 </div></div>
 #+end_src
-
-#+caption: Footnotes with ox-html-markdown-style-footnotes
-[[./after.png]]
 
 * Installation
 
