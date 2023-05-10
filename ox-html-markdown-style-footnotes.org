@@ -249,7 +249,7 @@ Finally, the package provides itself as ~ox-html-markdown-style-footnotes~:
   (provide 'ox-html-markdown-style-footnotes)
 #+end_src
 
-* Installation
+* Installation and usage
 
 Ox-html-markdown-style-footnotes is currently not available through any of the package registries.
 Instead, install it from the git repository directly.
