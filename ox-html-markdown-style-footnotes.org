@@ -4,7 +4,7 @@
 :END:
 #+title: Export Org documents with Markdown-style footnotes
 #+author: Jeff Kreeftmeijer
-#+date: 2023-03-26
+#+date: 2023-05-11
 #+options: toc:nil num:nil
 
 Ox-html-markdown-style footnotes is an Emacs extension that provides an option to export Org mode files to HTML with footnotes that resemble those typical in documents generated from Markdown files.
