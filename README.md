@@ -257,11 +257,13 @@ const puppeteer = require('puppeteer');
   await page.goto(`file://${__dirname}/../test/fixtures/footnote.html`);
   await page.waitForSelector('body');
   body = await page.$('body');
+  await page.evaluate(() => { document.querySelector('body').style.padding = '32px'; });
   await body.screenshot({path: "./before.png"});
 
   await page.goto(`file://${__dirname}/../test/fixtures/footnote-2.html`);
   await page.waitForSelector('body');
   body = await page.$('body');
+  await page.evaluate(() => { document.querySelector('body').style.padding = '32px'; });
   await body.screenshot({path: "./after.png"});
 
   await page.close();
