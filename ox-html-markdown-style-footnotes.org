@@ -18,6 +18,8 @@ Ox-html-markdown-style footnotes is an Emacs extension that provides an option t
   Hello, world![fn:1]
 
   [fn:1] A footnote.
+
+  With a second paragraph.
 #+end_src
 
 The Org document above produces the following footnotes when exported to HTML:

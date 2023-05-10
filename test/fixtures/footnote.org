@@ -1,3 +1,5 @@
 Hello, world![fn:1]
 
 [fn:1] A footnote.
+
+With a second paragraph.
