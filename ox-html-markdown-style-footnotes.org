@@ -331,10 +331,16 @@ The script loads puppeteer, then launches a headless browser, navigates to =test
     });
 
     await page.goto(`file://${__dirname}/../test/fixtures/footnote.html`);
-    await page.screenshot({path: "./before.png"});
+    await page.waitForSelector('body');
+    body = await page.$('body');
+    await page.evaluate(() => { document.querySelector('body').style.padding = '32px'; });
+    await body.screenshot({path: "./before.png"});
 
     await page.goto(`file://${__dirname}/../test/fixtures/footnote-2.html`);
-    await page.screenshot({path: "./after.png"});
+    await page.waitForSelector('body');
+    body = await page.$('body');
+    await page.evaluate(() => { document.querySelector('body').style.padding = '32px'; });
+    await body.screenshot({path: "./after.png"});
 
     await page.close();
     await browser.close();
