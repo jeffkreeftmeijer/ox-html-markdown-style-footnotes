@@ -155,34 +155,11 @@ The interesting part is executed for each footnote, and wraps each footnote in a
                               contents)))))
 #+end_src
 
-
-The updated implementation:
-
-- Replaces the footdef div with a li (the output is wrapped in an ol elsewhere)
-- Moves the anchor link down, and removes the sup and the footnum class from the backlink
-
-- Doesn't change behavior based on if the elements can be inlined, it leaves the contents as is
-
-#+name: footnote-definitions-list
-#+begin_src emacs-lisp
-  (format
-   "<li class=\"footdef\" role=\"doc-footnote\">%s %s</li>\n"
-   (org-trim (org-export-data def info))
-   (org-html--anchor
-    (format "fn.%d" n)
-    "↩&#65038;"
-    (format " href=\"#fnr.%d\" role=\"doc-backlink\"" n)
-    info))
-#+end_src
-
-
-To use Markdown-style footnotes in Org, advise the =org-html-footnote-section= function.
-This new function keeps most of the output the same, but uses an ordered list instead of nested =<div>= elements.
-It also uses a backlink with an arrow, which resembles the Markdown tradition:
 ** Advising ~org-html-footnote-section~
 
 #+headers: :exports none
 #+headers: :tangle ox-html-markdown-style-footnotes.el
+#+headers: :noweb yes
 #+begin_src emacs-lisp
   ;;; ox-html-markdown-style-footnotes.el --- Markdown-style footnotes for ox-html.el
 
@@ -193,13 +170,36 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
   ;; of some Markdown implementations.
 
   ;;; Code:
+
+  <<require-ox-html>>
+
+  <<org-html-markdown-style-footnotes--section>>
+
+  <<add-and-remove>>
+
+  <<provide>>
+
+  ;;; ox-html-markdown-style-footnotes.el ends here
 #+end_src
 
-#+headers: :tangle ox-html-markdown-style-footnotes.el
-#+headers: :noweb yes
+To override the footnotes function, first require ~ox-html~, the HTML exporter:
+
+#+name: require-ox-html
 #+begin_src emacs-lisp
   (require 'ox-html)
+#+end_src
 
+Then, define an updated version of ~org-html-footnote-section~, which is mostly a copy of the original, with some changes:
+
+- It turns the footnote section into an ordered list by wrapping it in ~<ol>~ tags
+- It switches from a ~<div>~ element to a list by wrapping each footnote in ~<li>~ tags
+- It moves the anchor link, which points back at the footnote reference, to the end of the footnote, and uses a Unicode arrow (↩︎) instead of the footnote's number
+- Removes the logic checking if a footnote can be inlined, as it always prints the contents as-is
+
+The updated copy is defined as ~org-html-markdown-style-footnotes--section~:
+
+#+name: org-html-markdown-style-footnotes--section
+#+begin_src emacs-lisp
   (defun org-html-markdown-style-footnotes--section (info)
     (pcase (org-export-collect-footnote-definitions info)
       (`nil nil)
@@ -213,10 +213,23 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
           (lambda (definition)
             (pcase definition
               (`(,n ,_ ,def)
-               <<footnote-definitions-list>>)))
+               (format
+                "<li class=\"footdef\" role=\"doc-footnote\">%s %s</li>\n"
+                (org-trim (org-export-data def info))
+                (org-html--anchor
+                 (format "fn.%d" n)
+                 "↩&#65038;"
+                 (format " href=\"#fnr.%d\" role=\"doc-backlink\"" n)
+                 info)))))
           definitions
           "\n"))))))
+#+end_src
 
+To replace the original, the new function is added as advice.
+The package includes functions to easily enable and disable itself through adding and removing its advice:
+
+#+name: add-and-remove
+#+begin_src emacs-lisp
     ;;;###autoload
   (defun org-html-markdown-style-footnotes-add ()
     (interactive)
@@ -227,19 +240,13 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
     (interactive)
     (advice-remove 'org-html-footnote-section
                    #'org-html-markdown-style-footnotes--section))
-
-  (provide 'ox-html-markdown-style-footnotes)
 #+end_src
 
-#+RESULTS:
-: ox-html-markdown-style-footnotes
+Finally, the package provides itself as ~ox-html-markdown-style-footnotes~:
 
-#+headers: :exports none
-#+headers: :tangle ox-html-markdown-style-footnotes.el
+#+name: provide
 #+begin_src emacs-lisp
-;;; ox-html-markdown-style-footnotes.el ends here
-#+end_src
-
+  (provide 'ox-html-markdown-style-footnotes)
 #+end_src
 
 * Installation
