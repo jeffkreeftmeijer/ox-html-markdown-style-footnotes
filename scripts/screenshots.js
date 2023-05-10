@@ -12,14 +12,10 @@ const puppeteer = require('puppeteer');
   });
 
   await page.goto(`file://${__dirname}/../test/fixtures/footnote.html`);
-  await page.waitForSelector('body');
-  body = await page.$('body');
-  await body.screenshot({path: "./before.png"});
+  await page.screenshot({path: "./before.png"});
 
   await page.goto(`file://${__dirname}/../test/fixtures/footnote-2.html`);
-  await page.waitForSelector('body');
-  body = await page.$('body');
-  await body.screenshot({path: "./after.png"});
+  await page.screenshot({path: "./after.png"});
 
   await page.close();
   await browser.close();
