@@ -31,7 +31,6 @@ The Org document above produces the following footnotes when exported to HTML:
 #+begin_src shell
   emacs test/fixtures/footnote.org --batch \
 	--eval '(setq org-html-doctype "html5")' \
-	--eval '(setq org-html-head-include-default-style nil)' \
 	--eval '(setq org-html-preamble nil)' \
 	--eval '(setq org-html-postamble nil)' \
 	--funcall org-html-export-to-html
