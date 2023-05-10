@@ -10,35 +10,51 @@
 
 (require 'ox-html)
 
-(defun org-html-markdown-style-footnotes--section (info)
-  (pcase (org-export-collect-footnote-definitions info)
-    (`nil nil)
-    (definitions
-     (format
-      (plist-get info :html-footnotes-section)
-      (org-html--translate "Footnotes" info)
-      (format
-       "<ol>\n%s</ol>\n"
-       (mapconcat
-        (lambda (definition)
-          (pcase definition
-            (`(,n ,_ ,def)
-             (format
-              "<li class=\"footdef\" role=\"doc-footnote\">%s %s</li>\n"
-              (org-trim (org-export-data def info))
-              (org-html--anchor
-               (format "fn.%d" n)
-               "↩&#65038;"
-               (format " href=\"#fnr.%d\" role=\"doc-backlink\"" n)
-               info)))))
-        definitions
-        "\n"))))))
+(defgroup org-export-html-markdown-style-footnotes nil
+  "Options for org-html-markdown-style-footnotes."
+  :tag "Org HTML Markdown-style footnotes"
+  :group 'org-export
+  :version "24.4"
+  :package-version '(Org . "8.0"))
+
+(defcustom org-html-markdown-style-footnotes nil
+  "Non-nil means to use Markdown-style footnotes in the exported document."
+  :group 'org-export-html-markdown-style-footnotes
+  :version "24.4"
+  :package-version '(Org . "8.0")
+  :type 'boolean)
+
+(defun org-html-markdown-style-footnotes--section (orig-fun info)
+  (if org-html-markdown-style-footnotes
+      (pcase (org-export-collect-footnote-definitions info)
+        (`nil nil)
+        (definitions
+         (format
+          (plist-get info :html-footnotes-section)
+          (org-html--translate "Footnotes" info)
+          (format
+           "<ol>\n%s</ol>\n"
+           (mapconcat
+            (lambda (definition)
+              (pcase definition
+                (`(,n ,_ ,def)
+                 (format
+                  "<li class=\"footdef\" role=\"doc-footnote\">%s %s</li>\n"
+                  (org-trim (org-export-data def info))
+                  (org-html--anchor
+                   (format "fn.%d" n)
+                   "↩&#65038;"
+                   (format " href=\"#fnr.%d\" role=\"doc-backlink\"" n)
+                   info)))))
+            definitions
+            "\n")))))
+    (funcall orig-fun info)))
 
   ;;;###autoload
 (defun org-html-markdown-style-footnotes-add ()
   (interactive)
   (advice-add 'org-html-footnote-section
-              :override #'org-html-markdown-style-footnotes--section))
+              :around #'org-html-markdown-style-footnotes--section))
 
 (defun org-html-markdown-style-footnotes-remove ()
   (interactive)

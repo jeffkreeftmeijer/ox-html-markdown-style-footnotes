@@ -80,11 +80,12 @@ It also uses a backlink with an arrow, which resembles the Markdown tradition:
         --eval '(setq org-html-preamble nil)' \
         --eval '(setq org-html-postamble nil)' \
         --eval '(org-html-markdown-style-footnotes-add)' \
+        --eval '(setq org-html-markdown-style-footnotes t)' \
         --funcall org-html-export-to-html
   cat test/fixtures/footnote-2.html | tail -n17 | head -n15
 #+end_src
 
-#+RESULTS[c7f215aa0a1e1ebd322ce777f0b527fd2103d910]:
+#+RESULTS[193dd472e5af73e7b6a24904afdcba201c58e30a]:
 #+begin_src html
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
@@ -173,6 +174,8 @@ The interesting part is executed for each footnote, and wraps each footnote in a
 
   <<require-ox-html>>
 
+  <<options>>
+
   <<org-html-markdown-style-footnotes--section>>
 
   <<add-and-remove>>
@@ -189,7 +192,27 @@ To override the footnotes function, first require ~ox-html~, the HTML exporter:
   (require 'ox-html)
 #+end_src
 
-Then, define an updated version of ~org-html-footnote-section~, which is mostly a copy of the original, with some changes:
+Define the ~org-html-markdown-style-footnotes~ variable, which is used to enable and disable the package after it's included:
+
+#+name: options
+#+begin_src emacs-lisp
+(defgroup org-export-html-markdown-style-footnotes nil
+  "Options for org-html-markdown-style-footnotes."
+  :tag "Org HTML Markdown-style footnotes"
+  :group 'org-export
+  :version "24.4"
+  :package-version '(Org . "8.0"))
+
+(defcustom org-html-markdown-style-footnotes nil
+  "Non-nil means to use Markdown-style footnotes in the exported document."
+  :group 'org-export-html-markdown-style-footnotes
+  :version "24.4"
+  :package-version '(Org . "8.0")
+  :type 'boolean)
+#+end_src
+
+Then, define an updated version of ~org-html-footnote-section~, which is mostly a copy of the original.
+If the ~org-html-markdown-style-footnotes~ variable is non-nil, the updated copy is used, which is different from the original in multiple ways:
 
 - It turns the footnote section into an ordered list by wrapping it in ~<ol>~ tags
 - It switches from a ~<div>~ element to a list by wrapping each footnote in ~<li>~ tags
@@ -200,29 +223,31 @@ The updated copy is defined as ~org-html-markdown-style-footnotes--section~:
 
 #+name: org-html-markdown-style-footnotes--section
 #+begin_src emacs-lisp
-  (defun org-html-markdown-style-footnotes--section (info)
-    (pcase (org-export-collect-footnote-definitions info)
-      (`nil nil)
-      (definitions
-       (format
-        (plist-get info :html-footnotes-section)
-        (org-html--translate "Footnotes" info)
-        (format
-         "<ol>\n%s</ol>\n"
-         (mapconcat
-          (lambda (definition)
-            (pcase definition
-              (`(,n ,_ ,def)
-               (format
-                "<li class=\"footdef\" role=\"doc-footnote\">%s %s</li>\n"
-                (org-trim (org-export-data def info))
-                (org-html--anchor
-                 (format "fn.%d" n)
-                 "↩&#65038;"
-                 (format " href=\"#fnr.%d\" role=\"doc-backlink\"" n)
-                 info)))))
-          definitions
-          "\n"))))))
+  (defun org-html-markdown-style-footnotes--section (orig-fun info)
+    (if org-html-markdown-style-footnotes
+        (pcase (org-export-collect-footnote-definitions info)
+          (`nil nil)
+          (definitions
+           (format
+            (plist-get info :html-footnotes-section)
+            (org-html--translate "Footnotes" info)
+            (format
+             "<ol>\n%s</ol>\n"
+             (mapconcat
+              (lambda (definition)
+                (pcase definition
+                  (`(,n ,_ ,def)
+                   (format
+                    "<li class=\"footdef\" role=\"doc-footnote\">%s %s</li>\n"
+                    (org-trim (org-export-data def info))
+                    (org-html--anchor
+                     (format "fn.%d" n)
+                     "↩&#65038;"
+                     (format " href=\"#fnr.%d\" role=\"doc-backlink\"" n)
+                     info)))))
+              definitions
+              "\n")))))
+      (funcall orig-fun info)))
 #+end_src
 
 To replace the original, the new function is added as advice.
@@ -234,13 +259,17 @@ The package includes functions to easily enable and disable itself through addin
   (defun org-html-markdown-style-footnotes-add ()
     (interactive)
     (advice-add 'org-html-footnote-section
-                :override #'org-html-markdown-style-footnotes--section))
+                :around #'org-html-markdown-style-footnotes--section))
 
   (defun org-html-markdown-style-footnotes-remove ()
     (interactive)
     (advice-remove 'org-html-footnote-section
                    #'org-html-markdown-style-footnotes--section))
 #+end_src
+
+The ~:around~ [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advice-Combinators.html][advice strategy]] is used instead of the more obvious ~:override~, because it needs to be possible to disable the override through setting ~org-html-markdown-style-footnotes~ to =nil=.
+This isn't possible when using the ~:override~ strategy, which doesn't call the advice with a reference to the original function.
+
 
 Finally, the package provides itself as ~ox-html-markdown-style-footnotes~:
 
