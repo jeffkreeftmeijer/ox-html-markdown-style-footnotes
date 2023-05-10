@@ -54,7 +54,10 @@ With a second paragraph.
 
 Footnotes consist of a link back to the place the footnote was referenced in the document and a =<div>= with the footnote's contents.
 The contents div, being a block element, is printed on a seperate line unless the default styling is loaded.
-The styling makes the footnotes appear inline, which places them behind the footnote link, but also inlines each paragraph for multi-paragraph footnotes.
+The styling makes the footnotes appear inline, which places them behind the footnote link, but also inlines each paragraph for multi-paragraph footnotes:
+
+#+caption: Org's default footnote styling
+[[./before.png]]
 
 Some flavors of Markdown use [[https://www.markdownguide.org/extended-syntax/#footnotes][ordered lists for footnotes]].
 These don't rely on styling, and they don't inline paragraphs in the footnotes.
@@ -128,19 +131,20 @@ After adding the advise with =org-html-markdown-style-footnotes-add=, the export
 #+headers: :results scalar
 #+headers: :wrap src html
 #+begin_src shell
+  cp test/fixtures/footnote.org test/fixtures/footnote-2.org
   emacs --batch \
-        --load=ox-html-markdown-style-footnotes.el \
-        --file=/tmp/footnote-2.org \
-        --eval '(setq org-html-doctype "html5")' \
-        --eval '(setq org-html-head-include-default-style nil)' \
-        --eval '(setq org-html-preamble nil)' \
-        --eval '(setq org-html-postamble nil)' \
-        --eval '(org-html-markdown-style-footnotes-add)' \
-        --funcall org-html-export-to-html
-  cat /tmp/footnote-2.html | tail -n13 | head -n10
+	--load=ox-html-markdown-style-footnotes.el \
+	--file=test/fixtures/footnote-2.org \
+	--eval '(setq org-html-doctype "html5")' \
+	--eval '(setq org-html-head-include-default-style nil)' \
+	--eval '(setq org-html-preamble nil)' \
+	--eval '(setq org-html-postamble nil)' \
+	--eval '(org-html-markdown-style-footnotes-add)' \
+	--funcall org-html-export-to-html
+  cat test/fixtures/footnote-2.html | tail -n13 | head -n10
 #+end_src
 
-#+RESULTS[e4aeb3dc67f0eb11396d406b613758c0632af791]:
+#+RESULTS[89a857f469cfc33402e145b270f72bdc882a65ce]:
 #+begin_src html
 <hr>
 <ol>
@@ -154,6 +158,8 @@ With a second paragraph.
 </ol>
 #+end_src
 
+#+caption: Footnotes with ox-html-markdown-style-footnotes
+[[./after.png]]
 
 * Installation
 
@@ -180,3 +186,46 @@ After calling ~org-html-markdown-style-footnotes-add~, set the ~org-html-markdow
 
 The git repository for ox-html-markdown-style-footnotes.el is hosted on [[https://codeberg.org/jkreeftmeijer/ox-html-markdown-style-footnotes.el][Codeberg]], and mirrored on [[https://github.com/jeffkreeftmeijer/ox-html-markdown-style-footnotes.el][GitHub]].
 Contributions are welcome via either platform.
+
+** Screenshots
+
+The README file for ox-html-markdown-style-footnotes includes screenshots to show what footnotes look like in an HTML page.
+A script is included to generate these in ~scripts/screenshots.js~, which can be run by sourcing it in a shell:
+
+#+begin_src shell
+  ./scripts/screenshots.js
+#+end_src
+
+#+RESULTS:
+
+The script loads puppeteer, then launches a headless browser, navigates to =test/fixtures/footnote.html=, takes the screenshot, and closes the browser:
+
+#+headers: :shebang #!/usr/bin/env node
+#+headers: :tangle scripts/screenshots.js
+#+begin_src js
+  const puppeteer = require('puppeteer');
+
+  (async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.setViewport({
+      width: 800,
+      height: 200,
+      deviceScaleFactor: 4
+    });
+
+    await page.goto(`file://${__dirname}/../test/fixtures/footnote.html`);
+    await page.waitForSelector('body');
+    body = await page.$('body');
+    await body.screenshot({path: "./before.png"});
+
+    await page.goto(`file://${__dirname}/../test/fixtures/footnote-2.html`);
+    await page.waitForSelector('body');
+    body = await page.$('body');
+    await body.screenshot({path: "./after.png"});
+
+    await page.close();
+    await browser.close();
+  })()
+#+end_src
