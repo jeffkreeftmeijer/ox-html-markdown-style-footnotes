@@ -231,6 +231,15 @@ After calling `org-html-markdown-style-footnotes-add`, set the `org-html-markdow
 The git repository for ox-html-markdown-style-footnotes.el is hosted on [Codeberg](https://codeberg.org/jkreeftmeijer/ox-html-markdown-style-footnotes.el), and mirrored on [GitHub](https://github.com/jeffkreeftmeijer/ox-html-markdown-style-footnotes.el). Contributions are welcome via either platform.
 
 
+### Tests
+
+Regression tests are written with [ERT](https://www.gnu.org/software/emacs/manual/html_mono/ert.html) and included in `test.el`. To run the tests in batch mode:
+
+```shell
+emacs -batch -l ert -l test.el -f ert-run-tests-batch-and-exit
+```
+
+
 ### Screenshots
 
 The README file for ox-html-markdown-style-footnotes includes screenshots to show what footnotes look like in an HTML page. A script is included to generate these in `scripts/screenshots.js`, which can be run by sourcing it in a shell:
