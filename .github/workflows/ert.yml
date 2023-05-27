@@ -18,4 +18,4 @@ jobs:
       - uses: purcell/setup-emacs@master
         with:
           version: 28.2
-      - run: emacs --batch --load ert --load test.el --funcall ert-run-tests-batch-and-exit
+      - run: scripts/test

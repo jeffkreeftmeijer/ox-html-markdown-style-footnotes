@@ -305,8 +305,10 @@ Contributions are welcome via either platform.
 ** Tests
 
 Regression tests are written with [[https://www.gnu.org/software/emacs/manual/html_mono/ert.html][ERT]] and included in =test.el=.
-To run the tests in batch mode:
+To run the tests in batch mode, use =scripts/test=, or run the emacs batch command directly:
 
+#+headers: :shebang #!/bin/sh
+#+headers: :tangle scripts/test
 #+begin_src shell
   emacs -batch -l ert -l test.el -f ert-run-tests-batch-and-exit
 #+end_src

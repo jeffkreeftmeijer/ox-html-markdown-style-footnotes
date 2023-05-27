@@ -233,7 +233,7 @@ The git repository for ox-html-markdown-style-footnotes.el is hosted on [Codeber
 
 ### Tests
 
-Regression tests are written with [ERT](https://www.gnu.org/software/emacs/manual/html_mono/ert.html) and included in `test.el`. To run the tests in batch mode:
+Regression tests are written with [ERT](https://www.gnu.org/software/emacs/manual/html_mono/ert.html) and included in `test.el`. To run the tests in batch mode, use `scripts/test`, or run the emacs batch command directly:
 
 ```shell
 emacs -batch -l ert -l test.el -f ert-run-tests-batch-and-exit
