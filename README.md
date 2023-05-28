@@ -43,13 +43,13 @@ To use Markdown-style footnotes in Org, ox-html-markdown footnotes advises the `
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 <ol>
-<li class="footdef" role="doc-footnote"><p class="footpara">
+<li id="fn.1" class="footdef" role="doc-footnote" tabindex="-1"><p class="footpara">
 A footnote.
 </p>
 
 <p class="footpara">
 With a second paragraph.
-</p> <a id="fn.1" href="#fnr.1" role="doc-backlink">↩&#65038;</a></li>
+</p> <a href="#fnr.1" role="doc-backlink">↩&#65038;</a></li>
 </ol>
 
 </div>
@@ -170,8 +170,8 @@ The updated copy is defined as `org-html-markdown-style-footnotes--section`:
 	      (pcase definition
 		(`(,n ,_ ,def)
 		 (format
-		  "<li class=\"footdef\" role=\"doc-footnote\">%s%s %s</li>\n"
-		  (format "<a id=\"fn.%d\"></a>" n)
+		  "<li id=\"fn.%d\" class=\"footdef\" role=\"doc-footnote\" tabindex=\"-1\">%s %s</li>\n"
+		  n
 		  (org-trim (org-export-data def info))
 		  (format "<a href=\"#fnr.%d\" role=\"doc-backlink\">↩&#65038;</a>" n)))))
 	    definitions
