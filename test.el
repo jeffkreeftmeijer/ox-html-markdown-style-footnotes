@@ -7,7 +7,7 @@
   (let ((org-html-markdown-style-footnotes t))
     (org-html-export-as-html))
   (should (string-match-p
-           "<ol>\n<li id=\"fn.1\" class=\"footdef\" role=\"doc-footnote\"><p class=\"footpara\">\nA footnote.\n</p>\n\n<p class=\"footpara\">\nWith a second paragraph.\n</p> <a href=\"#fnr.1\" role=\"doc-backlink\">↩&#65038;</a></li>\n</ol>"
+           "<ol>\n<li id=\"fn.1\" class=\"footdef\" role=\"doc-footnote\" tabindex=\"-1\"><p class=\"footpara\">\nA footnote.\n</p>\n\n<p class=\"footpara\">\nWith a second paragraph.\n</p> <a href=\"#fnr.1\" role=\"doc-backlink\">↩&#65038;</a></li>\n</ol>"
 	   (with-current-buffer "*Org HTML Export*" (buffer-string))))
   (org-html-markdown-style-footnotes-remove))
 
