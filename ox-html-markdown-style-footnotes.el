@@ -39,8 +39,8 @@
 	      (pcase definition
 		(`(,n ,_ ,def)
 		 (format
-		  "<li class=\"footdef\" role=\"doc-footnote\">%s%s %s</li>\n"
-		  (format "<a id=\"fn.%d\"></a>" n)
+		  "<li id=\"fn.%d\" class=\"footdef\" role=\"doc-footnote\">%s %s</li>\n"
+                  n
 		  (org-trim (org-export-data def info))
 		  (format "<a href=\"#fnr.%d\" role=\"doc-backlink\">↩&#65038;</a>" n)))))
 	    definitions
